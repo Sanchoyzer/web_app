@@ -30,7 +30,9 @@ class VkUserInfo:
         self.last_name = last_name
 
     @staticmethod
-    def get_vk_response(method_name, params, token=SERVICE_KEY):
+    def get_vk_response(method_name, params, token):
+        if token is None:
+            token = SERVICE_KEY
         r = requests.get(VK_API_URL.format(method_name, params, token, VK_API_VER))
         if r.status_code != requests.codes.ok:
             return None
@@ -41,8 +43,8 @@ class VkUserInfo:
         return response_text
 
     @staticmethod
-    def get_obj(user_id):
-        user_info = VkUserInfo.get_vk_response(f"users.get", f"user_ids={user_id}")
+    def get_obj(user_id, token=None):
+        user_info = VkUserInfo.get_vk_response(f"users.get", f"user_ids={user_id}", token)
         if user_info is None:
             return None
         if len(user_info) == 0:
@@ -52,8 +54,8 @@ class VkUserInfo:
         return user_info_obj
 
     @staticmethod
-    def get_user_friends(user_id, order, count):
-        user_friends = VkUserInfo.get_vk_response(f"friends.get", f"user_id={user_id}&order={order}&count={count}")
+    def get_user_friends(user_id, order, count, token=None):
+        user_friends = VkUserInfo.get_vk_response(f"friends.get", f"user_id={user_id}&order={order}&count={count}", token)
         if user_friends is None:
             return
         return user_friends.get("items")

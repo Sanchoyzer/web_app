@@ -9,14 +9,31 @@
     <div class="page-header">
         <h3><a href="{% url 'index' %}">Главная</a></h3>
     </div>
-    {% if vk_oauth_url is not None %}
+
+    {% if vk_user is not None %}
         <p>
-            <a href="{{ vk_oauth_url }}">Зайти через ВК</a>
+            Привет, {{ vk_user.first_name }} {{ vk_user.last_name }}!
+        </p>
+    {% elif vk_oauth_url is not None %}
+        <p>
+            <a href="{{ vk_oauth_url }}">Авторизоваться</a>
         </p>
     {% endif %}
+
     {% if vk_message is not None %}
         <p>
             {{ vk_message }}
+        </p>
+    {% endif %}
+
+    {% if vk_friends is not None %}
+        <p>
+            Друзья: <br>
+            <ul>
+            {% for vk_friend in vk_friends %}
+                <li>{{ vk_friend.first_name }} {{ vk_friend.last_name }}</li>
+            {% endfor %}
+            </ul>
         </p>
     {% endif %}
 </div>
