@@ -29,6 +29,15 @@ class VkUserInfo:
         self.first_name = first_name
         self.last_name = last_name
 
+    def get_username(self):
+        return '{} {}'.format(self.first_name, self.last_name)
+
+    def get_user_link(self):
+        if self.id is not None:
+            return 'https://vk.com/id' + str(self.id)
+        else:
+            return None
+
     @staticmethod
     def get_vk_response(method_name, params, token):
         if token is None:

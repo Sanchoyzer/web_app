@@ -12,11 +12,11 @@
 
     {% if vk_user is not None %}
         <p>
-            Привет, {{ vk_user.first_name }} {{ vk_user.last_name }}!
+            Привет, <a href="{{ vk_user.get_user_link }}">{{ vk_user.get_username }}</a>
         </p>
     {% elif vk_oauth_url is not None %}
         <p>
-            <a href="{{ vk_oauth_url }}">Авторизоваться</a>
+            <a href="{{ vk_oauth_url }}" class="btn btn-default btn-sm" role="button">Авторизоваться</a>
         </p>
     {% endif %}
 
@@ -31,7 +31,7 @@
             Друзья: <br>
             <ul>
             {% for vk_friend in vk_friends %}
-                <li>{{ vk_friend.first_name }} {{ vk_friend.last_name }}</li>
+                <li><a href="{{ vk_friend.get_user_link }}">{{ vk_friend.get_username }}</a></li>
             {% endfor %}
             </ul>
         </p>
