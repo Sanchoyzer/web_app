@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [    
     path('', views.index, name='index'),
-    #path('<int:question_id>/', views.detail, name='detail'),
+    path('vk_login', views.vk_login, name='vk-login'),
 ]
