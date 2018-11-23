@@ -14,7 +14,7 @@ import json
 
 
 VK_API_VER = '5.87'
-VK_API_URL = 'https://api.vk.com/method/{}?{}&access_token={}&v={}'
+VK_API_URL_METHOD = 'https://api.vk.com/method/{}?{}&access_token={}&v={}'
 VK_API_URL_OAUTH = 'https://oauth.vk.com/authorize?client_id={}&display={}&redirect_uri={}&scope={}&response_type={}&v={}'
 VK_API_URL_GET_TOKEN = 'https://oauth.vk.com/access_token?client_id={}&client_secret={}&redirect_uri={}&code={}'
 
@@ -42,13 +42,13 @@ class VkUserInfo:
     def get_vk_response(method_name, params, token):
         if token is None:
             token = SERVICE_KEY
-        r = requests.get(VK_API_URL.format(method_name, params, token, VK_API_VER))
+        r = requests.get(VK_API_URL_METHOD.format(method_name, params, token, VK_API_VER))
         if r.status_code != requests.codes.ok:
             return None
         try:
             response_text = json.loads(r.text).get("response")
         except ValueError as ex:
-            return None
+            response_text = None
         return response_text
 
     @staticmethod
@@ -56,9 +56,7 @@ class VkUserInfo:
         if user_id is None:
             return
         user_info = VkUserInfo.get_vk_response(f"users.get", f"user_ids={user_id}", token)
-        if user_info is None:
-            return None
-        if len(user_info) == 0:
+        if user_info is None or len(user_info) == 0:
             return None
         user_info_obj = VkUserInfo()
         user_info_obj.__dict__.update(user_info[0])
