@@ -54,7 +54,7 @@ class VkUserInfo:
     @staticmethod
     def get_obj(user_id, token=None):
         if user_id is None:
-            return
+            return None
         user_info = VkUserInfo.get_vk_response(f"users.get", f"user_ids={user_id}", token)
         if user_info is None or len(user_info) == 0:
             return None
@@ -65,10 +65,10 @@ class VkUserInfo:
     @staticmethod
     def get_user_friends(user_id, order, count, token=None):
         if user_id is None or order is None or not isinstance(count, int):
-            return
+            return None
         user_friends = VkUserInfo.get_vk_response(f"friends.get", f"user_id={user_id}&order={order}&count={count}", token)
         if user_friends is None:
-            return
+            return None
         return user_friends.get("items")
 
 

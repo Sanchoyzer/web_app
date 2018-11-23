@@ -18,8 +18,9 @@ def index(request):
     if token is not None:
         vk_user = vku.VkUserInfo.get_obj(request.session.get(COOKIE_USER), token)
         if vk_user is not None:
-            friends_list = vku.VkUserInfo.get_user_friends(vk_user.id, 'random', 5)
-            vk_friends = list(map(lambda friend_id: vku.VkUserInfo.get_obj(friend_id, token), friends_list))
+            friends_list = vku.VkUserInfo.get_user_friends(vk_user.id, 'random', 5, token)
+            if friends_list is not None:
+                vk_friends = list(map(lambda friend_id: vku.VkUserInfo.get_obj(friend_id, token), friends_list))
 
     return render(
         request,
