@@ -11,16 +11,13 @@
 
 import requests
 import json
+from dotenv import dotenv_values
 
 
 VK_API_VER = '5.87'
 VK_API_URL_METHOD = 'https://api.vk.com/method/{}?{}&access_token={}&v={}'
 VK_API_URL_OAUTH = 'https://oauth.vk.com/authorize?client_id={}&display={}&redirect_uri={}&scope={}&response_type={}&v={}'
 VK_API_URL_GET_TOKEN = 'https://oauth.vk.com/access_token?client_id={}&client_secret={}&redirect_uri={}&code={}'
-
-APP_ID = '6757102'
-APP_KEY = 'kvUEvbuVEc5aSWLf4ldH'
-SERVICE_KEY = '2dc114e72dc114e72dc114e7422da60e0922dc12dc114e7763278a25caea5969f628529'
 
 
 class VkUserInfo:
@@ -41,7 +38,7 @@ class VkUserInfo:
     @staticmethod
     def get_vk_response(method_name, params, token):
         if token is None:
-            token = SERVICE_KEY
+            token = dotenv_values().get('VK_SERVICE_KEY')
         r = requests.get(VK_API_URL_METHOD.format(method_name, params, token, VK_API_VER))
         if r.status_code != requests.codes.ok:
             return None
@@ -73,11 +70,11 @@ class VkUserInfo:
 
 
 def get_vk_oauth_url(redirect_uri):
-    return VK_API_URL_OAUTH.format(APP_ID, "popup", redirect_uri, "friends", "code", VK_API_VER)
+    return VK_API_URL_OAUTH.format(dotenv_values().get('VK_APP_ID'), "popup", redirect_uri, "friends", "code", VK_API_VER)
 
 
 def get_vk_token(code, redirect_uri):
-    r = requests.get(VK_API_URL_GET_TOKEN.format(APP_ID, APP_KEY, redirect_uri, code))
+    r = requests.get(VK_API_URL_GET_TOKEN.format(dotenv_values().get('VK_APP_ID'), dotenv_values().get('VK_APP_KEY'), redirect_uri, code))
     if r.status_code != requests.codes.ok:
         return None
     return json.loads(r.text)
