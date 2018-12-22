@@ -24,7 +24,7 @@ def index(request):
 
     return render(
         request,
-        'index.html',
+        'test_vk/index.html',
         context={
             'vk_oauth_url': vku.get_vk_oauth_url(request.build_absolute_uri(reverse('vk-login'))),
             'vk_message': vk_message,
