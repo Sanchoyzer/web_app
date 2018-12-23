@@ -20,7 +20,8 @@
             <a href="{% url 'forms-users' %}">Список активных пользователей</a>
         </p>
         <p>
-            Отправить письмо
+            <a href="{% url 'forms-email' %}" class="btn btn-default btn-sm" role="button">Отправить письмо</a>
+            <a href="{% url 'forms-email-log' %}" class="btn btn-default btn-sm" role="button">Лог отправки</a>
         </p>
     {% else %}
         {% if msg_error is not None %}

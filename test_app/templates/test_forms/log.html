@@ -1,0 +1,32 @@
+﻿{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Пользователи</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h3><a href="{% url 'forms-index' %}">Главная</a></h3>
+    </div>
+</div>
+
+<div class="container">
+    <ul class="list-group">
+        {% if logs is not None %}
+        <div class="row">
+            <div class="col-md-3">Дата</div>
+            <div class="col-md-3">Успешность</div>
+        </div>
+        {% endif %}
+        {% for log in logs %}
+            <div class="row">
+                <div class="col-md-3">{{ log.date }}</div>
+                <div class="col-md-3">{{ log.is_success }}</div>
+            </div>
+        {% endfor %}
+    </ul>
+</div>
+
+
+{% endblock %}
