@@ -1,7 +1,13 @@
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
+from django.urls import reverse
+
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from .forms import UserRegistrationForm
 
 
 class IndexView(TemplateView):
@@ -17,8 +23,21 @@ def logout_view(request):
     return redirect('forms-index')
 
 
-class SignUp(CreateView):
-    template_name = 'registration/signup.html'
-
-
-
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user_obj = form.cleaned_data
+            username = user_obj['username']
+            password = user_obj['password']
+            if not User.objects.filter(username=username).exists():
+                User.objects.create_user(username=username, password=password)
+                user = authenticate(username=username, password=password)
+                login(request, user)
+                return redirect('forms-index')
+            else:
+                return render(request, 'registration/error.html',
+                              {'error_msg': 'Такой пользователь уже существует', 'prev_url': reverse('forms-index')})
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'registration/signup.html', {'form': form})
