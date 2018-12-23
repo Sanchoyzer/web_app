@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
@@ -41,3 +41,11 @@ def register(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+
+class UsersView(ListView):
+    model = User
+    context_object_name = 'users'
+    queryset = User.objects.filter(is_active=True).order_by('username')
+    template_name = 'test_forms/users.html'
+

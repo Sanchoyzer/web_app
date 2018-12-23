@@ -17,6 +17,9 @@
             Привет, {{ user.get_username }}. <a href="{% url 'forms-logout' %}">Разлогиниться</a>
         </p>
         <p>
+            <a href="{% url 'forms-users' %}">Список активных пользователей</a>
+        </p>
+        <p>
             Отправить письмо
         </p>
     {% else %}
