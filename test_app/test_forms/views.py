@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.core.mail import get_connection, send_mail, mail_admins, send_mass_mail
 
 from smtplib import SMTPException
+from threading import Thread
 
 from .forms import UserRegistrationForm
 from .models import EmailLog
@@ -55,7 +56,7 @@ class UsersView(ListView):
     template_name = 'test_forms/users.html'
 
 
-def send_email(request):
+def send_email_background():
     connection = get_connection(
         host=dtv().get('EMAIL_HOST'),
         port=dtv().get('EMAIL_PORT'),
@@ -80,6 +81,11 @@ def send_email(request):
     log = EmailLog()
     log.is_success = (num_sent > 0)
     log.save()
+
+
+def send_email(request):
+    t = Thread(target=send_email_background, args=())
+    t.start()
     return redirect('forms-index')
 
 
