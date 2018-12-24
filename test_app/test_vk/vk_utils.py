@@ -9,10 +9,10 @@
     https://vk.com/dev/auth_sites
 '''
 
-import requests
 import json
-from dotenv import dotenv_values
 
+import requests
+from dotenv import dotenv_values
 
 VK_API_VER = '5.87'
 VK_API_URL_METHOD = 'https://api.vk.com/method/{}?{}&access_token={}&v={}'

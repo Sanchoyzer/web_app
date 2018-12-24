@@ -1,19 +1,18 @@
-from django.views.generic import TemplateView, ListView
-from django.contrib.auth import logout
-from django.shortcuts import redirect, render
-from django.contrib.auth import views as auth_views
-from django.urls import reverse
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-from django.core.mail import get_connection, send_mail, mail_admins, send_mass_mail
-
 from smtplib import SMTPException
 from threading import Thread
 
-from .forms import UserRegistrationForm, UserFeedbackForm
-from .models import EmailLog
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.models import User
+from django.core.mail import (get_connection, mail_admins, send_mail,
+                              send_mass_mail)
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.views.generic import ListView, TemplateView
 from dotenv import dotenv_values as dtv
+
+from .forms import UserFeedbackForm, UserRegistrationForm
+from .models import EmailLog
 
 
 class IndexView(TemplateView):

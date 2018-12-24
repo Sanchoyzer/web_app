@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
 
 from . import vk_utils as vku
-
 
 COOKIE_MESSAGE = 'message'
 COOKIE_TOKEN = 'token'
