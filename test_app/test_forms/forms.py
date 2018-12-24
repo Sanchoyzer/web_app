@@ -13,3 +13,16 @@ class UserRegistrationForm(forms.Form):
         max_length=32,
         widget=forms.PasswordInput()
     )
+
+
+class UserFeedbackForm(forms.Form):
+    email = forms.EmailField(
+        required=True,
+        label='Ваш email'
+    )
+    text = forms.CharField(
+        required=True,
+        label='Сообщение',
+        max_length=256,
+        widget=forms.Textarea
+    )

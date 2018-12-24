@@ -8,6 +8,6 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='forms-login'),
     path('logout/', views.logout_view, name='forms-logout'),
     path('users/', views.UsersView.as_view(), name='forms-users'),
-    path('send_email/', views.send_email, name='forms-email'),
     path('send_email_log/', views.EmailLogView.as_view(), name='forms-email-log'),
+    path('feedback/', views.feedback, name='forms-feedback'),
 ]

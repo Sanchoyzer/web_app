@@ -10,7 +10,7 @@ from django.core.mail import get_connection, send_mail, mail_admins, send_mass_m
 from smtplib import SMTPException
 from threading import Thread
 
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, UserFeedbackForm
 from .models import EmailLog
 
 from dotenv import dotenv_values as dtv
@@ -56,7 +56,14 @@ class UsersView(ListView):
     template_name = 'test_forms/users.html'
 
 
-def send_email_background():
+class EmailLogView(ListView):
+    model = EmailLog
+    context_object_name = 'logs'
+    queryset = EmailLog.objects.all().order_by('date')
+    template_name = 'test_forms/log.html'
+
+
+def send_email_background(email_subject, email_msg):
     connection = get_connection(
         host=dtv().get('EMAIL_HOST'),
         port=dtv().get('EMAIL_PORT'),
@@ -69,8 +76,8 @@ def send_email_background():
     superusers_emails = list(email_item[0] for email_item in superusers_emails_queryset)
     try:
         num_sent = send_mail(
-            subject='Тема письма',
-            message='Тело',
+            subject=email_subject,
+            message=email_msg,
             from_email=dtv().get('EMAIL_HOST_USER'),
             recipient_list=superusers_emails,
             connection=connection
@@ -83,15 +90,16 @@ def send_email_background():
     log.save()
 
 
-def send_email(request):
-    t = Thread(target=send_email_background, args=())
-    t.start()
-    return redirect('forms-index')
-
-
-class EmailLogView(ListView):
-    model = EmailLog
-    context_object_name = 'logs'
-    queryset = EmailLog.objects.all().order_by('date')
-    template_name = 'test_forms/log.html'
-
+def feedback(request):
+    if request.method == 'POST':
+        form = UserFeedbackForm(request.POST)
+        if form.is_valid():
+            feedback_obj = form.cleaned_data
+            email = feedback_obj['email']
+            text = feedback_obj['text']
+            t = Thread(target=send_email_background, args=(f'Сообщение от {email}', text,))
+            t.start()
+            return redirect('forms-index')
+    else:
+        form = UserFeedbackForm()
+    return render(request, 'test_forms/feedback.html', {'form': form})
