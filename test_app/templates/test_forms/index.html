@@ -1,17 +1,10 @@
-{% extends "base_generic.html" %}
+{% extends "test_forms\page_with_header.html" %}
 
 {% block title %}
 <title>Forms</title>
 {% endblock %}
 
-{% block content %}
-<div class="container">
-    <div class="page-header">
-        <h3><a href="{% url 'forms-index' %}">Главная</a></h3>
-    </div>
-</div>
-
-<div class="container">
+{% block inner_content %}
     {% if user.is_authenticated %}
         <p>
             Привет, {{ user.get_username }}. <a href="{% url 'forms-logout' %}">Разлогиниться</a>
@@ -34,6 +27,4 @@
             <a href="{% url 'forms-login' %}">Войти</a> или <a href="{% url 'forms-signup' %}">Зарегистрироваться</a>
         </p>
     {% endif %}
-</div>
-
 {% endblock %}

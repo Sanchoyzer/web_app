@@ -1,23 +1,14 @@
-﻿{% extends "base_generic.html" %}
+﻿{% extends "test_forms\page_with_header.html" %}
 
 {% block title %}
-<title>Обратная связь</title>
+    <title>Обратная связь</title>
 {% endblock %}
 
-{% block content %}
-<div class="container">
-    <div class="page-header">
-        <h3><a href="{% url 'forms-index' %}">Главная</a></h3>
-    </div>
-</div>
-
-<div class="container">
+{% block inner_content %}
     <br>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Отправить</button>
     </form>
-</div>
-
 {% endblock %}
