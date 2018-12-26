@@ -50,4 +50,4 @@ def vk_login(request):
             request.session.set_expiry(token.get('expires_in', 0))
     elif error is not None:
         request.session[COOKIE_MESSAGE] = '{}: {}'.format(error, error_description)
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('vk-index'))
