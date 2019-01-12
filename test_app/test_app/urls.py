@@ -20,5 +20,6 @@ urlpatterns = [
     # path('', include('test_vk.urls')),
     path('test_vk/', include('test_vk.urls')),
     path('test_forms/', include('test_forms.urls')),
+    path('drf/', include('test_drf.urls')),
     path('admin/', admin.site.urls),
 ]

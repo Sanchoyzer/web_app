@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'test_forms.apps.TestFormsConfig',
+    'test_drf.apps.TestDrfConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
