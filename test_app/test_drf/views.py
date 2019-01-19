@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.shortcuts import render
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -22,16 +23,16 @@ class PhoneBookViewSet(viewsets.ModelViewSet):
             return Response(r'Введите параметры для поиска: имя и/или телефон',
                             status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-        queryset = PhoneBook.objects.all()
+        query = PhoneBook.objects.all()
         if name is not None:
-            queryset = queryset.filter(Q(name__icontains=name))
+            query = query.filter(Q(name__icontains=name))
         if phone is not None:
-            queryset = queryset.filter(Q(phone__icontains=phone))
-        if queryset.count() == 0:
+            query = query.filter(Q(phone__icontains=phone))
+        if query.count() == 0:
             return Response(r'По заданным параметрам ничего не найдено',
                             status=status.HTTP_404_NOT_FOUND)
         else:
-            serializer = self.get_serializer(queryset, many=True)
+            serializer = self.get_serializer(query, many=True)
             return Response(serializer.data)
 
     @staticmethod
@@ -41,4 +42,14 @@ class PhoneBookViewSet(viewsets.ModelViewSet):
             return None
         else:
             return param
+
+
+def index(request):
+    return render(
+        request,
+        'test_drf/index.html',
+        context={
+            'search_url': '/drf/phoneBook/find/?name='
+        },
+    )
 

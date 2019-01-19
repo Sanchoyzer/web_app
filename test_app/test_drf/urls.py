@@ -8,6 +8,7 @@ router.register(r'phoneBook', views.PhoneBookViewSet)
 
 
 urlpatterns = [
+    path('index', views.index, name='drf-index'),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

@@ -1,0 +1,54 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+<title>Test DFR</title>
+{% endblock %}
+
+{% block js %}
+<script language='JavaScript'>
+    function httpGet()
+    {
+        var textInput = document.getElementById('textInput');
+        var text = textInput.value;
+        textInput.value = ""
+        // todo: не будет ли тут инъекции?
+        url = '{{ search_url }}' + text
+
+        var x = new XMLHttpRequest();
+        x.open('GET', url, true);
+        x.onload = function () {
+            var ul = document.getElementById('phoneBooksList');
+            var li = document.createElement('li');
+            if (x.status != 200) {
+                li.innerHTML = x.status + '(' + x.statusText + ')';
+            } else {
+                li.innerHTML = x.responseText;
+            }
+            ul.appendChild(li);
+        }
+        x.send(null);
+        return ;
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h3><a href="{% url 'drf-index' %}">Главная</a></h3>
+    </div>
+
+    <p>
+        <form>
+            <input type = "text" id="textInput" size="20" placeholder="Введите имя">
+            <input type = "button" onclick="httpGet()" id="addButton" value="Поиск">
+        </form>
+        <p>
+            История поисков:
+        </p>
+        <ul id = "phoneBooksList">
+
+        </ul>
+    </p>
+</div>
+{% endblock %}
