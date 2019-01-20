@@ -49,7 +49,8 @@ def index(request):
         request,
         'test_drf/index.html',
         context={
-            'search_url': '/drf/phoneBook/find/?name='
+            'search_url': '/drf/phoneBook/find/?name=',
+            'add_url': '/drf/phoneBook/'
         },
     )
 

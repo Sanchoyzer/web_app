@@ -6,40 +6,83 @@
 
 {% block js %}
 <script language='JavaScript'>
-    function httpGet()
-    {
-        var textInput = document.getElementById('textInput');
+    function getTextAndClear(elemName) {
+        var textInput = document.getElementById(elemName);
         var text = textInput.value;
-        textInput.value = ""
-        // todo: не будет ли тут инъекции?
-        url = '{{ search_url }}' + text
+        textInput.value = '';
+        return text;
+    }
 
-        var x = new XMLHttpRequest();
-        x.open('GET', url, true);
-        x.onload = function () {
+    function httpFind() {
+        var name = getTextAndClear('findNameInput');
+        url = '{{ search_url }}' + name;
+
+        var httpReq = new XMLHttpRequest();
+        httpReq.open('GET', url, true);
+        httpReq.onload = function () {
             var ul = document.getElementById('phoneBooksList');
-            ul.innerHTML = ''
-            if (x.status != 200) {
+            ul.innerHTML = '';
+            if (httpReq.status != 200) {
                 var li = document.createElement('li');
-                if (x.status == 404) {
-                    li.innerHTML = 'Ничего не найдено'
-                } else if (x.status == 422) {
-                    li.innerHTML = 'Недостаточная длина вводимого текста'
+                if (httpReq.status == 404) {
+                    li.innerHTML = 'Ничего не найдено';
+                } else if (httpReq.status == 422) {
+                    li.innerHTML = 'Недостаточная длина вводимого текста';
                 } else {
-                    li.innerHTML = x.status + '(' + x.statusText + ')';
+                    li.innerHTML = httpReq.status + '(' + httpReq.statusText + ')';
                 }
                 ul.appendChild(li);
             } else {
-                var arrPhoneBook = JSON.parse(x.responseText)
+                var arrPhoneBook = JSON.parse(httpReq.responseText);
                 for (itemPhoneBook of arrPhoneBook) {
                     var li = document.createElement('li');
-                    li.innerHTML = itemPhoneBook.name + ', ' + itemPhoneBook.phone
+                    li.innerHTML = itemPhoneBook.name + ', ' + itemPhoneBook.phone;
                     ul.appendChild(li);
                 }
             }
         }
-        x.send(null);
-        return ;
+        httpReq.send(null);
+    }
+
+    function findElemAndFillText(elemName, text, isSuccess) {
+        var pText = document.getElementById(elemName);
+        if (isSuccess) {
+            pText.style.color = '#00FF00';
+        } else {
+            pText.style.color = '#FF0000';
+        }
+        pText.innerHTML = text;
+    }
+
+    function httpAdd() {
+        var name = getTextAndClear('addNameInput');
+        var phone = getTextAndClear('addPhoneInput');
+
+        // озаботимся только проверкой на фронте
+        if (name == '' || phone == '') {
+            findElemAndFillText('resultAdd', 'Нужно заполнить все поля!', false);
+            return
+        }
+        // не паримся регулярками, воткнем простое условие
+        if (phone.length < 5) {
+            findElemAndFillText('resultAdd', 'Телефон некорректный: должен быть >= 5 символов!');
+            return
+        }
+
+        var postBody = 'name=' + encodeURIComponent(name) + '&phone=' +  + encodeURIComponent(phone)
+        url = '{{ add_url }}';
+
+        var httpReq = new XMLHttpRequest();
+        httpReq.open('POST', url, true);
+        httpReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        httpReq.onload = function () {
+            if (httpReq.status == 201) {
+                findElemAndFillText('resultAdd', 'Запись добавлена успешно', true);
+            } else {
+                findElemAndFillText('resultAdd', httpReq.status + '(' + httpReq.statusText + ')', false);
+            }
+        }
+        httpReq.send(postBody);
     }
 </script>
 {% endblock %}
@@ -53,8 +96,8 @@
     <div class="container">
         <h4>Поиск по имени</h4>
         <form>
-            <input type = "text" id="textInput" size="20" placeholder="Введите имя">
-            <input type = "button" onclick="httpGet()" id="addButton" value="Поиск">
+            <input type = "text" id="findNameInput" size="20" placeholder="Введите имя">
+            <input type = "button" onclick="httpFind()" id="findButton" value="Поиск">
         </form>
         <br>
         <p>
@@ -62,6 +105,22 @@
         </p>
         <ul id = "phoneBooksList">
         </ul>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <div class="container">
+        <h4>Добавление записи</h4>
+        <form>
+            <input type = "text" id="addNameInput" size="20" placeholder="Имя">
+            <input type = "text" id="addPhoneInput" size="20" placeholder="Телефон">
+            <input type = "button" onclick="httpAdd()" id="addButton" value="Добавить">
+        </form>
+        <br>
+        <p id = "resultAdd">
+        </p>
     </div>
 </div>
 {% endblock %}
