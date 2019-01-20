@@ -18,13 +18,25 @@
         x.open('GET', url, true);
         x.onload = function () {
             var ul = document.getElementById('phoneBooksList');
-            var li = document.createElement('li');
+            ul.innerHTML = ''
             if (x.status != 200) {
-                li.innerHTML = x.status + '(' + x.statusText + ')';
+                var li = document.createElement('li');
+                if (x.status == 404) {
+                    li.innerHTML = 'Ничего не найдено'
+                } else if (x.status == 422) {
+                    li.innerHTML = 'Недостаточная длина вводимого текста'
+                } else {
+                    li.innerHTML = x.status + '(' + x.statusText + ')';
+                }
+                ul.appendChild(li);
             } else {
-                li.innerHTML = x.responseText;
+                var arrPhoneBook = JSON.parse(x.responseText)
+                for (itemPhoneBook of arrPhoneBook) {
+                    var li = document.createElement('li');
+                    li.innerHTML = itemPhoneBook.name + ', ' + itemPhoneBook.phone
+                    ul.appendChild(li);
+                }
             }
-            ul.appendChild(li);
         }
         x.send(null);
         return ;
@@ -38,17 +50,18 @@
         <h3><a href="{% url 'drf-index' %}">Главная</a></h3>
     </div>
 
-    <p>
+    <div class="container">
+        <h4>Поиск по имени</h4>
         <form>
             <input type = "text" id="textInput" size="20" placeholder="Введите имя">
             <input type = "button" onclick="httpGet()" id="addButton" value="Поиск">
         </form>
+        <br>
         <p>
-            История поисков:
+            Результат:
         </p>
         <ul id = "phoneBooksList">
-
         </ul>
-    </p>
+    </div>
 </div>
 {% endblock %}
