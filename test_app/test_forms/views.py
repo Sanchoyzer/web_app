@@ -71,8 +71,9 @@ def send_email_background(email_subject, email_msg):
         use_tls=bool(int(dtv().get('EMAIL_USE_SSL', '1')))
     )
 
-    superusers_emails_queryset = User.objects.filter(is_superuser=True, email__isnull=False).values_list('email')
-    superusers_emails = list(email_item[0] for email_item in superusers_emails_queryset)
+    superusers_emails_queryset = User.objects.filter(is_superuser=True, email__isnull=False).\
+                                                    values_list('email', flat=True)
+    superusers_emails = list(superusers_emails_queryset)
     try:
         num_sent = send_mail(
             subject=email_subject,
